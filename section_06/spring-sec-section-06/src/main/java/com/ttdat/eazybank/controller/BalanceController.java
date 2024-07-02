@@ -3,6 +3,7 @@ package com.ttdat.eazybank.controller;
 import com.ttdat.eazybank.model.AccountTransactions;
 import com.ttdat.eazybank.repository.AccountTransactionsRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,8 +19,8 @@ public class BalanceController {
     private AccountTransactionsRepository accountTransactionsRepository;
 
     @GetMapping
-    public List<AccountTransactions> getBalanceDetails(@RequestParam int id) {
-        return accountTransactionsRepository.
-                findByCustomerIdOrderByTransactionDtDesc(id);
+    public ResponseEntity<List<AccountTransactions>> getBalanceDetails(@RequestParam int id) {
+        return ResponseEntity.ok(accountTransactionsRepository
+                .findByCustomerIdOrderByTransactionDtDesc(id));
     }
 }

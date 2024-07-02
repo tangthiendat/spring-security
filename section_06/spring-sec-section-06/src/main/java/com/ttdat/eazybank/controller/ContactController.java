@@ -3,6 +3,7 @@ package com.ttdat.eazybank.controller;
 import com.ttdat.eazybank.model.Contact;
 import com.ttdat.eazybank.repository.ContactRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,10 +20,10 @@ public class ContactController {
     private ContactRepository contactRepository;
 
     @PostMapping
-    public Contact saveContactInquiryDetails(@RequestBody Contact contact) {
+    public ResponseEntity<Contact> saveContactInquiryDetails(@RequestBody Contact contact) {
         contact.setContactId(getServiceReqNumber());
         contact.setCreateDt(new Date(System.currentTimeMillis()));
-        return contactRepository.save(contact);
+        return ResponseEntity.ok(contactRepository.save(contact));
     }
 
     public String getServiceReqNumber() {

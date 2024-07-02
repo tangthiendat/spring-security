@@ -24,7 +24,7 @@ public class LoginController {
 
     @PostMapping("/register")
     public ResponseEntity registerUser(@RequestBody Customer customer) {
-        Customer savedCustomer = null;
+        Customer savedCustomer;
         ResponseEntity response = null;
         try {
             String hashPwd = passwordEncoder.encode(customer.getPwd());
@@ -39,16 +39,16 @@ public class LoginController {
         } catch (Exception ex) {
             response = ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An exception occured due to " + ex.getMessage());
+                    .body("An exception occurred due to " + ex.getMessage());
         }
         return response;
     }
 
     @RequestMapping("/user")
-    public Customer getUserDetailsAfterLogin(Authentication authentication) {
+    public ResponseEntity<Customer> getUserDetailsAfterLogin(Authentication authentication) {
         List<Customer> customers = customerRepository.findByEmail(authentication.getName());
         if (!customers.isEmpty()) {
-            return customers.getFirst();
+            return ResponseEntity.ok(customers.getFirst());
         } else {
             return null;
         }

@@ -16,7 +16,7 @@ public class ProjectSecurityConfig {
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).
                 authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/accounts", "/balance", "/loans", "/cards").authenticated()
+                        .requestMatchers("/accounts", "/balance", "/loans", "/cards", "/user").authenticated()
                         .requestMatchers("/contact", "/notices", "/register").permitAll())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
