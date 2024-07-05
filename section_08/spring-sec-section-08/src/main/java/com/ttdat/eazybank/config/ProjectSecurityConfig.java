@@ -1,6 +1,7 @@
 package com.ttdat.eazybank.config;
 
 import com.ttdat.eazybank.filter.AuthoritiesLoggingAfterFilter;
+import com.ttdat.eazybank.filter.AuthoritiesLoggingAtFilter;
 import com.ttdat.eazybank.filter.CsrfCookieFilter;
 import com.ttdat.eazybank.filter.RequestValidationBeforFilter;
 import org.springframework.context.annotation.Bean;
@@ -45,6 +46,7 @@ public class ProjectSecurityConfig {
                 }).addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new RequestValidationBeforFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+                .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/accounts").hasRole("USER")
                         .requestMatchers("/balance").hasAnyRole("USER", "ADMIN")
