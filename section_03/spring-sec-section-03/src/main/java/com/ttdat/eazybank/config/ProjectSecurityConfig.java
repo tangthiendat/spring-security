@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -24,15 +24,15 @@ public class ProjectSecurityConfig {
     }
 
 //    @Bean
-//    public InMemoryUserDetailsManager userDetailsManager() {
+//    public UserDetailsService userDetailsManager() {
 //        UserDetails admin = User
 //                .withUsername("admin")
-//                .password("123456")
+//                .password("{bcrypt}$2a$12$XMT5WvTEESORB.hTYyyXj.6rdXieq/fm/E7yoz5FSlX5xdQNp6qPG")
 //                .authorities("ADMIN")
 //                .build();
 //        UserDetails user = User
 //                .withUsername("user")
-//                .password("123456")
+//                .password("{noop}123456")
 //                .authorities("READONLY")
 //                .build();
 //        return new InMemoryUserDetailsManager(admin, user);
@@ -46,6 +46,6 @@ public class ProjectSecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }
