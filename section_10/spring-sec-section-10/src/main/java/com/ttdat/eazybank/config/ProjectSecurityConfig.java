@@ -1,11 +1,13 @@
 package com.ttdat.eazybank.config;
 
+import com.ttdat.eazybank.filter.AuthoritiesLoggingAfterFilter;
+import com.ttdat.eazybank.filter.AuthoritiesLoggingAtFilter;
 import com.ttdat.eazybank.filter.CsrfCookieFilter;
+import com.ttdat.eazybank.filter.RequestValidationBeforFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,8 +44,15 @@ public class ProjectSecurityConfig {
                             .ignoringRequestMatchers("/contact", "/notices", "/register")
                             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
                 }).addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new RequestValidationBeforFilter(), BasicAuthenticationFilter.class)
+                .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+                .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/accounts", "/balance", "/loans", "/cards", "/user").authenticated()
+                        .requestMatchers("/accounts").hasRole("USER")
+                        .requestMatchers("/balance").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/loans").hasRole("USER")
+                        .requestMatchers("/cards").hasRole("USER")
+                        .requestMatchers("/user").authenticated()
                         .requestMatchers("/contact", "/notices", "/register").permitAll())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());

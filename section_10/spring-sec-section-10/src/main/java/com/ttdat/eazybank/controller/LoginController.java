@@ -2,30 +2,34 @@ package com.ttdat.eazybank.controller;
 
 import com.ttdat.eazybank.model.Customer;
 import com.ttdat.eazybank.repository.CustomerRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.sql.Date;
+import java.util.List;
+
 @RestController
+@AllArgsConstructor
 public class LoginController {
 
-    private final CustomerRepository customerRepository;
-    private final PasswordEncoder passwordEncoder;
-
-    public LoginController(CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
-        this.customerRepository = customerRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private CustomerRepository customerRepository;
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody Customer customer) {
+    public ResponseEntity registerUser(@RequestBody Customer customer) {
         Customer savedCustomer;
-        ResponseEntity<String> response = null;
+        ResponseEntity response = null;
         try {
-            customer.setPwd(passwordEncoder.encode(customer.getPwd()));
+            String hashPwd = passwordEncoder.encode(customer.getPwd());
+            customer.setPwd(hashPwd);
+            customer.setCreateDt(String.valueOf(new Date(System.currentTimeMillis())));
             savedCustomer = customerRepository.save(customer);
             if (savedCustomer.getId() > 0) {
                 response = ResponseEntity
@@ -39,4 +43,16 @@ public class LoginController {
         }
         return response;
     }
+
+    @RequestMapping("/user")
+    public ResponseEntity<Customer> getUserDetailsAfterLogin(Authentication authentication) {
+        List<Customer> customers = customerRepository.findByEmail(authentication.getName());
+        if (!customers.isEmpty()) {
+            return ResponseEntity.ok(customers.getFirst());
+        } else {
+            return null;
+        }
+
+    }
+    
 }
