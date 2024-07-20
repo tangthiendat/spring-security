@@ -17,7 +17,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-public class LoginController {
+public class UserController {
 
     private CustomerRepository customerRepository;
     private PasswordEncoder passwordEncoder;
