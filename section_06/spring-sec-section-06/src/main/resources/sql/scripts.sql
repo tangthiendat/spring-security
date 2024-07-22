@@ -1,28 +1,26 @@
-create database eazybank;
-
-use eazybank;
-
-CREATE TABLE `users`
+create table users
 (
-    `id`       INT         NOT NULL AUTO_INCREMENT,
-    `username` VARCHAR(45) NOT NULL,
-    `password` VARCHAR(45) NOT NULL,
-    `enabled`  INT         NOT NULL,
-    PRIMARY KEY (`id`)
+    username varchar(50)  not null primary key,
+    password varchar(500) not null,
+    enabled  boolean      not null
 );
-
-CREATE TABLE `authorities`
+create table authorities
 (
-    `id`        int         NOT NULL AUTO_INCREMENT,
-    `username`  varchar(45) NOT NULL,
-    `authority` varchar(45) NOT NULL,
-    PRIMARY KEY (`id`)
+    username  varchar(50) not null,
+    authority varchar(50) not null,
+    constraint fk_authorities_users foreign key (username) references users (username)
 );
+create unique index ix_auth_username on authorities (username, authority);
 
 INSERT IGNORE INTO `users`
-VALUES (NULL, 'happy', '12345', '1');
+VALUES ('user', '{noop}EazyBytes@12345', '1');
 INSERT IGNORE INTO `authorities`
-VALUES (NULL, 'happy', 'write');
+VALUES ('user', 'read');
+
+INSERT IGNORE INTO `users`
+VALUES ('admin', '{bcrypt}$2a$12$88.f6upbBvy0okEa7OfHFuorV29qeK.sVbB9VQ6J6dWM1bW6Qef8m', '1');
+INSERT IGNORE INTO `authorities`
+VALUES ('admin', 'admin');
 
 CREATE TABLE `customer`
 (
@@ -32,5 +30,8 @@ CREATE TABLE `customer`
     `role`  varchar(45)  NOT NULL,
     PRIMARY KEY (`id`)
 );
+
 INSERT INTO `customer` (`email`, `pwd`, `role`)
-VALUES ('johndoe@example.com', '54321', 'admin');
+VALUES ('happy@example.com', '{noop}EazyBytes@12345', 'read');
+INSERT INTO `customer` (`email`, `pwd`, `role`)
+VALUES ('admin@example.com', '{bcrypt}$2a$12$88.f6upbBvy0okEa7OfHFuorV29qeK.sVbB9VQ6J6dWM1bW6Qef8m', 'admin');
