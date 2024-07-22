@@ -2,7 +2,6 @@ package com.ttdat.eazybank.controller;
 
 import com.ttdat.eazybank.model.Customer;
 import com.ttdat.eazybank.repository.CustomerRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,29 +10,34 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequiredArgsConstructor
-public class LoginController {
+public class UserController {
 
     private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public UserController(CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
+        this.customerRepository = customerRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody Customer customer) {
-        Customer savedCustomer;
-        ResponseEntity<String> response = null;
         try {
-            customer.setPwd(passwordEncoder.encode(customer.getPwd()));
-            savedCustomer = customerRepository.save(customer);
-            if (savedCustomer.getId() > 0) {
-                response = ResponseEntity
-                        .status(HttpStatus.CREATED)
-                        .body("Given user details are successfully registered");
+            String hashPwd = passwordEncoder.encode(customer.getPwd());
+            customer.setPwd(hashPwd);
+            Customer savedCustomer = customerRepository.save(customer);
+
+            if(savedCustomer.getId()>0) {
+                return ResponseEntity.status(HttpStatus.CREATED).
+                        body("Given user details are successfully registered");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).
+                        body("User registration failed");
             }
         } catch (Exception ex) {
-            response = ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An exception occurred due to " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+                    body("An exception occurred: " + ex.getMessage());
         }
-        return response;
+
     }
 }
