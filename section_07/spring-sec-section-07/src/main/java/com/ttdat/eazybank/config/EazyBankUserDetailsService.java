@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EazyBankUserDetailsService implements UserDetailsService {
 
-    CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

@@ -1,5 +1,6 @@
 package com.ttdat.eazybank.config;
 
+import com.ttdat.eazybank.exception.CustomBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -22,7 +23,8 @@ public class ProjectSecurityProdConfig {
                         .requestMatchers("/accounts", "/balance", "/loans", "/cards").authenticated()
                         .requestMatchers("/contact", "/notices", "/register").permitAll())
                 .formLogin(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults());
+                .httpBasic(httpBasic ->
+                        httpBasic.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         return http.build();
     }
 
