@@ -18,7 +18,9 @@ public class ProjectSecurityProdConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.sessionManagement(sessionManagement -> sessionManagement.invalidSessionUrl("/invalid-session"))
+        http.sessionManagement(sessionManagement ->
+                        sessionManagement.invalidSessionUrl("/invalid-session")
+                                .maximumSessions(1).maxSessionsPreventsLogin(true))
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
