@@ -18,11 +18,12 @@ public class ProjectSecurityProdConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.requiresChannel(channel -> channel.anyRequest().requiresSecure())
+        http.sessionManagement(sessionManagement -> sessionManagement.invalidSessionUrl("/invalid-session"))
+                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/accounts", "/balance", "/loans", "/cards").authenticated()
-                        .requestMatchers("/contact", "/notices", "/register").permitAll())
+                        .requestMatchers("/contact", "/notices", "/register", "/invalid-session").permitAll())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(httpBasic ->
                         httpBasic.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()))
