@@ -1,5 +1,6 @@
 package com.ttdat.eazybank.config;
 
+import com.ttdat.eazybank.exception.CustomAccessDeniedHandler;
 import com.ttdat.eazybank.exception.CustomBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,8 @@ public class ProjectSecurityProdConfig {
                         .requestMatchers("/contact", "/notices", "/register").permitAll())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(httpBasic ->
-                        httpBasic.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
+                        httpBasic.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()))
+                .exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));;
         return http.build();
     }
 
