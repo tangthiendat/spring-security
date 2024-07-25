@@ -1,19 +1,16 @@
-package com.ttdat.eazybank.model;
+package com.eazybytes.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
+@Getter @Setter
 @Table(name = "contact_messages")
 public class Contact {
 
@@ -33,5 +30,5 @@ public class Contact {
 
 	@Column(name = "create_dt")
 	private Date createDt;
-
+	
 }

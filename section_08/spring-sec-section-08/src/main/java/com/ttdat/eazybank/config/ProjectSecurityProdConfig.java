@@ -13,23 +13,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@Profile("!prod")
-public class ProjectSecurityConfig {
+@Profile("prod")
+public class ProjectSecurityProdConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.sessionManagement(sessionManagement ->
-                sessionManagement.invalidSessionUrl("/invalid-session")
-                        .maximumSessions(3).maxSessionsPreventsLogin(true))
-                .requiresChannel(channel -> channel.anyRequest().requiresInsecure())
+                        sessionManagement.invalidSessionUrl("/invalid-session")
+                                .maximumSessions(1).maxSessionsPreventsLogin(true))
+                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/accounts", "/balance", "/loans", "/cards").authenticated()
-                        .requestMatchers("/contact", "/notices", "/register").permitAll())
+                        .requestMatchers("/contact", "/notices", "/register", "/invalid-session").permitAll())
                 .formLogin(Customizer.withDefaults())
-                .httpBasic(hbc ->
-                        hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()))
-                .exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
+                .httpBasic(httpBasic ->
+                        httpBasic.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()))
+                .exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));;
         return http.build();
     }
 

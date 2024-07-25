@@ -1,22 +1,21 @@
 package com.ttdat.eazybank.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
 
-@Getter
-@Setter
-@NoArgsConstructor
+import java.sql.Date;
+
 @Entity
+@Getter @Setter
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
-    private int id;
+    private long id;
 
     private String name;
 
@@ -31,5 +30,7 @@ public class Customer {
     private String role;
 
     @Column(name = "create_dt")
-    private String createDt;
+    @JsonIgnore
+    private Date createDt;
+
 }

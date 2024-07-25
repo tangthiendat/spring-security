@@ -1,20 +1,17 @@
 package com.ttdat.eazybank.model;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
 
+@Entity
 @Getter
 @Setter
-@NoArgsConstructor
-@Entity
 @Table(name="account_transactions")
 public class AccountTransactions {
 	
@@ -26,7 +23,7 @@ public class AccountTransactions {
 	private long accountNumber;
 	
 	@Column(name = "customer_id")
-	private int customerId;
+	private long customerId;
 	
 	@Column(name="transaction_dt")
 	private Date transactionDt;
@@ -44,6 +41,6 @@ public class AccountTransactions {
 	private int closingBalance;
 	
 	@Column(name = "create_dt")
-	private String createDt;
+	private Date createDt;
 
 }

@@ -5,17 +5,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
-@NoArgsConstructor
+import java.sql.Date;
+
 @Entity
+@Getter @Setter
 public class Accounts {
 
 	@Column(name = "customer_id")
-	private int customerId;
+	private long customerId;
 
 	@Id
 	@Column(name="account_number")
@@ -28,6 +27,6 @@ public class Accounts {
 	private String branchAddress;
 
 	@Column(name = "create_dt")
-	private String createDt;
+	private Date createDt;
 	
 }
