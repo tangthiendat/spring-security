@@ -47,7 +47,11 @@ public class ProjectSecurityConfig {
                                 .maximumSessions(3).maxSessionsPreventsLogin(true))
                 .requiresChannel(channel -> channel.anyRequest().requiresInsecure())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/accounts", "/balance", "/loans", "/cards", "/user").authenticated()
+                        .requestMatchers("/accounts").hasAuthority("VIEWACCOUNT")
+                        .requestMatchers( "/balance").hasAuthority("VIEWBALANCE")
+                        .requestMatchers( "/loans").hasAuthority("VIEWLOANS")
+                        .requestMatchers("/cards").hasAuthority("VIEWCARDS")
+                        .requestMatchers("/user").authenticated()
                         .requestMatchers("/contact", "/notices", "/register").permitAll())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(hbc ->

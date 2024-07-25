@@ -30,7 +30,7 @@ public class ProjectSecurityProdConfig {
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .cors(corsConfig -> corsConfig.configurationSource(request -> {
                     CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+                    config.setAllowedOrigins(Collections.singletonList("https://localhost:4200"));
                     config.setAllowedMethods(Collections.singletonList("*"));
                     config.setAllowCredentials(true);
                     config.setAllowedHeaders(Collections.singletonList("*"));
@@ -46,7 +46,11 @@ public class ProjectSecurityProdConfig {
                                 .maximumSessions(1).maxSessionsPreventsLogin(true))
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/accounts", "/balance", "/loans", "/cards", "/user").authenticated()
+                        .requestMatchers("/accounts").hasAuthority("VIEWACCOUNT")
+                        .requestMatchers( "/balance").hasAuthority("VIEWBALANCE")
+                        .requestMatchers( "/loans").hasAuthority("VIEWLOANS")
+                        .requestMatchers("/cards").hasAuthority("VIEWCARDS")
+                        .requestMatchers("/user").authenticated()
                         .requestMatchers("/contact", "/notices", "/register", "/invalid-session").permitAll())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(httpBasic ->
