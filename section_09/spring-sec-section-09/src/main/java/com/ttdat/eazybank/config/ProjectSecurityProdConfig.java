@@ -20,13 +20,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import java.util.Collections;
 
 @Configuration
-@Profile("!prod")
-public class ProjectSecurityConfig {
+@Profile("prod")
+public class ProjectSecurityProdConfig {
 
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler csrfTokenRequestAttributeHandler = new CsrfTokenRequestAttributeHandler();
-
         http.securityContext(contextConfig -> contextConfig.requireExplicitSave(false))
                 .sessionManagement(sessionConfig -> sessionConfig.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .cors(corsConfig -> corsConfig.configurationSource(request -> {
@@ -44,15 +43,15 @@ public class ProjectSecurityConfig {
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .sessionManagement(sessionManagement ->
                         sessionManagement.invalidSessionUrl("/invalid-session")
-                                .maximumSessions(3).maxSessionsPreventsLogin(true))
-                .requiresChannel(channel -> channel.anyRequest().requiresInsecure())
+                                .maximumSessions(1).maxSessionsPreventsLogin(true))
+                .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/accounts", "/balance", "/loans", "/cards", "/user").authenticated()
-                        .requestMatchers("/contact", "/notices", "/register").permitAll())
+                        .requestMatchers("/contact", "/notices", "/register", "/invalid-session").permitAll())
                 .formLogin(Customizer.withDefaults())
-                .httpBasic(hbc ->
-                        hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()))
-                .exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));
+                .httpBasic(httpBasic ->
+                        httpBasic.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()))
+                .exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()));;
         return http.build();
     }
 

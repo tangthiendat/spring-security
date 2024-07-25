@@ -2,57 +2,44 @@ package com.ttdat.eazybank.controller;
 
 import com.ttdat.eazybank.model.Customer;
 import com.ttdat.eazybank.repository.CustomerRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.sql.Date;
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserController {
 
-    private CustomerRepository customerRepository;
-    private PasswordEncoder passwordEncoder;
+    private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register")
-    public ResponseEntity registerUser(@RequestBody Customer customer) {
-        Customer savedCustomer;
-        ResponseEntity response = null;
+    public ResponseEntity<String> registerUser(@RequestBody Customer customer) {
         try {
             String hashPwd = passwordEncoder.encode(customer.getPwd());
             customer.setPwd(hashPwd);
-            customer.setCreateDt(String.valueOf(new Date(System.currentTimeMillis())));
-            savedCustomer = customerRepository.save(customer);
-            if (savedCustomer.getId() > 0) {
-                response = ResponseEntity
-                        .status(HttpStatus.CREATED)
-                        .body("Given user details are successfully registered");
+            Customer savedCustomer = customerRepository.save(customer);
+
+            if(savedCustomer.getId()>0) {
+                return ResponseEntity.status(HttpStatus.CREATED).
+                        body("Given user details are successfully registered");
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).
+                        body("User registration failed");
             }
         } catch (Exception ex) {
-            response = ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An exception occurred due to " + ex.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).
+                    body("An exception occurred: " + ex.getMessage());
         }
-        return response;
+
     }
 
-    @RequestMapping("/user")
+    @GetMapping("/user")
     public ResponseEntity<Customer> getUserDetailsAfterLogin(Authentication authentication) {
-        List<Customer> customers = customerRepository.findByEmail(authentication.getName());
-        if (!customers.isEmpty()) {
-            return ResponseEntity.ok(customers.getFirst());
-        } else {
-            return null;
-        }
-
+        Customer customer = customerRepository.findByEmail(authentication.getName()).orElse(null);
+        return ResponseEntity.ok(customer);
     }
-    
 }

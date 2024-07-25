@@ -4,21 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.sql.Date;
 import java.util.Set;
 
-@Getter
-@Setter
-@NoArgsConstructor
 @Entity
+@Getter @Setter
 public class Customer {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "customer_id")
-    private int id;
+    private long id;
 
     private String name;
 
@@ -32,10 +30,11 @@ public class Customer {
 
     private String role;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
-    private Set<Authority> authorities;
-
     @Column(name = "create_dt")
-    private String createDt;
+    @JsonIgnore
+    private Date createDt;
+
+    @OneToMany(mappedBy = "customer", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private Set<Authority> authorities;
 }
