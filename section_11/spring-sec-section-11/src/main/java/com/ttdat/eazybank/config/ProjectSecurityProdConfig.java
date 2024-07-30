@@ -44,9 +44,6 @@ public class ProjectSecurityProdConfig {
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
-                .sessionManagement(sessionManagement ->
-                        sessionManagement.invalidSessionUrl("/invalid-session")
-                                .maximumSessions(1).maxSessionsPreventsLogin(true))
                 .requiresChannel(channel -> channel.anyRequest().requiresSecure())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/accounts").hasRole("USER")

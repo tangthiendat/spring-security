@@ -49,9 +49,6 @@ public class ProjectSecurityConfig {
                 .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
-                .sessionManagement(sessionManagement ->
-                        sessionManagement.invalidSessionUrl("/invalid-session")
-                                .maximumSessions(3).maxSessionsPreventsLogin(true))
                 .requiresChannel(channel -> channel.anyRequest().requiresInsecure())
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers("/accounts").hasRole("USER")
