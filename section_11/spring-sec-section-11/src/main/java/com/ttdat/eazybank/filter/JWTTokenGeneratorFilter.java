@@ -37,7 +37,7 @@ public class JWTTokenGeneratorFilter extends OncePerRequestFilter {
             response.setHeader(ApplicationConstants.JWT_SECRET, jwt);
 
         }
-        doFilter(request, response, filterChain);
+        filterChain.doFilter(request, response);
     }
 
     @Override
