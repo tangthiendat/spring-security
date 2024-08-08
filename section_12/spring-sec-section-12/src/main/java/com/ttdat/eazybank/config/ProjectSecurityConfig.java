@@ -58,7 +58,7 @@ public class ProjectSecurityConfig {
                         .requestMatchers( "/loans").hasRole("USER")
                         .requestMatchers("/cards").hasRole("USER")
                         .requestMatchers("/user").authenticated()
-                        .requestMatchers("/contact", "/notices", "/register", "/apiLogin").permitAll())
+                        .requestMatchers("/contact", "/notices", "/register", "/apiLogin", "/error").permitAll())
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(hbc ->
                         hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()))
